@@ -21,6 +21,16 @@ EMERGENCY_CONTACTS = {
     'management': '555-0222'
 }
 
+# Keyword Matching for Conversation Routing
+KEYWORDS = {
+    'emergency': ['emergency', 'help', 'urgent', 'accident', 'fire', 'medical'],
+    'appointment': ['appointment', 'schedule', 'meeting', 'book'],
+    'registration': ['register', 'check in', 'sign in', 'visitor'],
+    'information': ['information', 'tell me', 'what are', 'where is', 'hours', 'location'],
+    'greeting': ['hello', 'hi', 'hey', 'good morning', 'good afternoon'],
+    'farewell': ['bye', 'goodbye', 'thanks', 'thank you', 'see you']
+}
+
 # Responses
 GREETINGS = [
     "Hello! Welcome to our office. How can I help you today?",

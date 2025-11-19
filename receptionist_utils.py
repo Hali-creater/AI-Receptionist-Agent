@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 import smtplib
-from email.mime.text import MimeText
+from email.mime.text import MIMEText
 
 class NotificationSystem:
     def __init__(self):
@@ -41,27 +41,46 @@ class DataManager:
         self.visitors_file = 'visitors.json'
         self.appointments_file = 'appointments.json'
     
-    def save_visitor(self, visitor_data):
-        """Save visitor data"""
+    def save_data(self, filepath, data):
+        """Generic data saving method"""
         try:
-            visitors = self.load_visitors()
-            visitors.append(visitor_data)
-            
-            with open(self.visitors_file, 'w') as f:
-                json.dump(visitors, f, indent=2)
+            with open(filepath, 'w') as f:
+                json.dump(data, f, indent=2)
             return True
         except Exception as e:
-            print(f"Error saving visitor: {e}")
+            print(f"Error saving data to {filepath}: {e}")
             return False
-    
-    def load_visitors(self):
-        """Load all visitors"""
+
+    def load_data(self, filepath):
+        """Generic data loading method"""
         try:
-            with open(self.visitors_file, 'r') as f:
+            with open(filepath, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
             return []
+        except json.JSONDecodeError:
+            return []
+
+    def save_visitor(self, visitor_data):
+        """Save visitor data"""
+        visitors = self.load_data(self.visitors_file)
+        visitors.append(visitor_data)
+        return self.save_data(self.visitors_file, visitors)
+
+    def load_visitors(self):
+        """Load all visitors"""
+        return self.load_data(self.visitors_file)
     
+    def save_appointment(self, appointment_data):
+        """Save appointment data"""
+        appointments = self.load_data(self.appointments_file)
+        appointments.append(appointment_data)
+        return self.save_data(self.appointments_file, appointments)
+
+    def load_appointments(self):
+        """Load all appointments"""
+        return self.load_data(self.appointments_file)
+
     def get_todays_visitors(self):
         """Get today's visitors"""
         visitors = self.load_visitors()
