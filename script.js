@@ -8,21 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
     let conversationState = 'idle';
-    let tempUserData = {};
+    let tempLeadData = {};
 
     const config = {
         companyInfo: {
-            hours: "9 AM to 5 PM, Monday through Friday",
-            location: "123 Business Street, Suite 100",
-            contact: "Phone: 555-0123, Email: hello@company.com",
-            wifi: "Network: Company-Guest, Password: Welcome123",
-            services: "We offer consulting, development, and support services"
+            name: "Australian Lawyers & Advocates",
+            address: "Level 1, 299 Elizabeth Street, Sydney, NSW 2000, Australia",
+            phone: "(02) 9159 9833",
+            email: "info@lawyersandadvocates.com.au",
+            greeting: "Welcome to Australian Lawyers & Advocates. We are a criminal and traffic law firm based in Sydney. How can I help you today?",
+            founders: "Our Legal Practice Directors, Jack Leitner and Daniel Shestowsky, are both Accredited Specialists in Criminal Law.",
+            values: "We provide high-quality, client-centered legal support. We treat our clients as part of our legal team, ensuring you are not just a number."
+        },
+        services: {
+            "criminal law": ["firearms/weapons", "sexual assault", "drug defence", "murder & manslaughter", "assault", "armed robbery", "fraud", "domestic violence", "self defence"],
+            "traffic law": ["drink driving", "reckless driving", "traffic tickets"],
+            "family law": ["We offer some family law services. For complex cases, we may refer you to a specialist."]
         },
         keywords: {
-            emergency: ['emergency', 'help', 'urgent', 'accident', 'fire', 'medical'],
-            appointment: ['appointment', 'schedule', 'meeting'],
-            registration: ['register', 'check in', 'sign in'],
-            information: ['information', 'tell me', 'where is', 'hours', 'location', 'contact', 'wifi', 'services'],
+            consultation: ['consultation', 'appointment', 'meeting', 'speak to a lawyer', 'legal advice'],
+            information: ['information', 'tell me about', 'who are you', 'services', 'lawyers', 'values', 'contact', 'address'],
             greeting: ['hello', 'hi', 'good morning'],
             farewell: ['bye', 'thanks', 'goodbye']
         }
@@ -60,105 +65,88 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (config.keywords.emergency.some(k => lowerCaseText.includes(k))) {
-            handleEmergency();
-        } else if (config.keywords.appointment.some(k => lowerCaseText.includes(k))) {
-            startAppointment();
-        } else if (config.keywords.registration.some(k => lowerCaseText.includes(k))) {
-            startRegistration();
+        if (config.keywords.consultation.some(k => lowerCaseText.includes(k))) {
+            startLeadQualification();
         } else if (config.keywords.information.some(k => lowerCaseText.includes(k))) {
             handleInformation(lowerCaseText);
         } else if (config.keywords.greeting.some(k => lowerCaseText.includes(k))) {
-            speak("Hello! How can I help you today?");
+            speak("Hello! How can I help you?");
         } else if (config.keywords.farewell.some(k => lowerCaseText.includes(k))) {
-            speak("Thank you for visiting! Have a great day!");
+            speak("Thank you for contacting us. Have a great day!");
         } else {
-            speak("I'm here to help with appointments, visitor registration, or general information. What would you like to do?");
+            speak("I can help you schedule a consultation or provide information about our firm. What would you like to do?");
         }
     };
 
     const handleConversationFlow = (text) => {
         switch (conversationState) {
-            case 'awaiting_appointment_name':
-                tempUserData.name = text;
-                conversationState = 'awaiting_appointment_date';
-                speak(`Nice to meet you ${text}. What day would work best?`);
+            case 'awaiting_issue_type':
+                tempLeadData.issueType = text;
+                conversationState = 'awaiting_issue_details';
+                speak("Thank you. Could you briefly describe your situation?");
                 break;
-            case 'awaiting_appointment_date':
-                tempUserData.date = text;
-                conversationState = 'awaiting_appointment_time';
-                speak("And what time would you prefer?");
+            case 'awaiting_issue_details':
+                tempLeadData.details = text;
+                conversationState = 'awaiting_charge_status';
+                speak("Have you already been charged, or are you seeking advice?");
                 break;
-            case 'awaiting_appointment_time':
-                tempUserData.time = text;
-                saveAppointment(tempUserData);
-                speak(`Perfect! I've scheduled you for ${tempUserData.date} at ${tempUserData.time}.`);
-                resetConversation();
+            case 'awaiting_charge_status':
+                tempLeadData.chargeStatus = text;
+                conversationState = 'awaiting_urgency';
+                speak("How urgent is this matter? For example, do you have a court date soon?");
                 break;
-            case 'awaiting_registration_name':
-                tempUserData.name = text;
-                conversationState = 'awaiting_registration_company';
-                speak("What company are you from?");
+            case 'awaiting_urgency':
+                tempLeadData.urgency = text;
+                conversationState = 'awaiting_contact_name';
+                speak("I see. To schedule your consultation, may I have your full name?");
                 break;
-            case 'awaiting_registration_company':
-                tempUserData.company = text;
-                conversationState = 'awaiting_registration_contact';
-                speak("Who are you here to see today?");
+            case 'awaiting_contact_name':
+                tempLeadData.name = text;
+                conversationState = 'awaiting_contact_details';
+                speak(`Thank you, ${text}. What is the best phone number or email to reach you at?`);
                 break;
-            case 'awaiting_registration_contact':
-                tempUserData.contact = text;
-                saveRegistration(tempUserData);
-                speak(`Thank you, ${tempUserData.name}. I've notified ${tempUserData.contact} that you've arrived.`);
+            case 'awaiting_contact_details':
+                tempLeadData.contact = text;
+                saveLead(tempLeadData);
+                speak(`Thank you. A specialist from our team will contact you at ${text} shortly. We will be in touch soon.`);
                 resetConversation();
                 break;
         }
     };
 
-    const startAppointment = () => {
-        conversationState = 'awaiting_appointment_name';
-        tempUserData = {};
-        speak("I can help you schedule an appointment. What's your name?");
-    };
-
-    const startRegistration = () => {
-        conversationState = 'awaiting_registration_name';
-        tempUserData = {};
-        speak("Let me get you registered. What's your full name?");
+    const startLeadQualification = () => {
+        conversationState = 'awaiting_issue_type';
+        tempLeadData = {};
+        speak("I can help with that. First, what type of legal issue are you facing? (e.g., Criminal, Traffic, or Family law)");
     };
 
     const handleInformation = (text) => {
-        if (text.includes('hour')) {
-            speak(`Our office hours are ${config.companyInfo.hours}.`);
-        } else if (text.includes('location') || text.includes('address')) {
-            speak(`We are located at ${config.companyInfo.location}.`);
-        } else if (text.includes('contact')) {
-            speak(`You can reach us at ${config.companyInfo.contact}.`);
-        } else if (text.includes('wifi')) {
-            speak(`The WiFi details are: ${config.companyInfo.wifi}.`);
-        } else if (text.includes('service')) {
-            speak(`We offer the following services: ${config.companyInfo.services}.`);
+        if (text.includes('lawyer') || text.includes('who')) {
+            speak(config.companyInfo.founders);
+        } else if (text.includes('service') || text.includes('criminal') || text.includes('traffic')) {
+            const criminalServices = config.services["criminal law"].join(', ');
+            const trafficServices = config.services["traffic law"].join(', ');
+            speak(`We specialise in Criminal Law, including: ${criminalServices}. We also handle Traffic Law, such as: ${trafficServices}. We offer some family law services as well.`);
+        } else if (text.includes('value') || text.includes('approach')) {
+            speak(config.companyInfo.values);
+        } else if (text.includes('contact') || text.includes('address') || text.includes('phone') || text.includes('email')) {
+            speak(`You can reach us at ${config.companyInfo.phone}, email us at ${config.companyInfo.email}, or visit our office at ${config.companyInfo.address}.`);
         } else {
-            speak("I can provide information about office hours, location, contact details, WiFi, and services.");
+            speak("I can provide information about our lawyers, our services, our values, or our contact details. What would you like to know?");
         }
-    };
-
-    const handleEmergency = () => {
-        speak("I've detected this might be an emergency. I am connecting you with security immediately.");
     };
 
     const resetConversation = () => {
         conversationState = 'idle';
-        tempUserData = {};
+        tempLeadData = {};
     };
 
-    const saveData = (key, data) => {
+    const saveLead = (data) => {
+        const key = 'leads';
         const existingData = JSON.parse(localStorage.getItem(key)) || [];
-        existingData.push(data);
+        existingData.push({ ...data, timestamp: new Date().toISOString() });
         localStorage.setItem(key, JSON.stringify(existingData));
     };
-
-    const saveAppointment = (data) => saveData('appointments', { ...data, timestamp: new Date().toISOString() });
-    const saveRegistration = (data) => saveData('registrations', { ...data, checkInTime: new Date().toISOString() });
 
     sendButton.addEventListener('click', () => {
         const text = userInput.value.trim();
@@ -189,6 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial greeting
     setTimeout(() => {
-        speak("Hello! Welcome to our office. How can I help you today?");
+        speak(config.companyInfo.greeting);
     }, 500);
 });
