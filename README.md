@@ -1,6 +1,6 @@
-# Virtual Receptionist Web Application
+# Australian Lawyers & Advocates - Virtual Receptionist
 
-This is a web-based virtual receptionist application that can greet visitors, schedule appointments, handle registrations, and provide company information using a conversational interface.
+This is a web-based virtual receptionist application for Australian Lawyers & Advocates, a law firm specializing in criminal and traffic law. The agent can greet visitors, provide information about the firm, and qualify potential clients by gathering information about their legal issues.
 
 ## How to Use
 
@@ -12,9 +12,7 @@ This is a web-based virtual receptionist application that can greet visitors, sc
 
 ## Features
 
--   **Visitor Greeting:** The receptionist will greet you when you open the application.
--   **Appointment Scheduling:** You can schedule an appointment by saying "schedule an appointment" or similar phrases.
--   **Visitor Registration:** You can check in by saying "I want to register" or similar phrases.
--   **Information Provision:** You can ask for information about office hours, location, contact details, WiFi, and services.
--   **Emergency Handling:** The receptionist can detect emergency keywords and will simulate connecting you with security.
--   **Data Persistence:** All appointments and registrations are saved in your browser's `localStorage`.
+-   **Custom Greeting:** The receptionist greets visitors with a message specific to Australian Lawyers & Advocates.
+-   **Lead Qualification:** The agent can guide potential clients through a series of questions to understand their legal needs, including the type of issue, urgency, and contact information.
+-   **Information Provision:** The agent can provide information about the firm's lawyers (Jack Leitner and Daniel Shestowsky), services (criminal, traffic, and family law), values, and contact details.
+-   **Data Persistence:** All lead information is saved in your browser's `localStorage`.
