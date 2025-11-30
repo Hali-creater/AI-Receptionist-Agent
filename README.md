@@ -1,6 +1,6 @@
-# Australian Lawyers & Advocates - Virtual Receptionist
+# AvaDesk - AI Receptionist Assistant
 
-This is a web-based virtual receptionist application for Australian Lawyers & Advocates, a law firm specializing in criminal and traffic law. The agent can greet visitors, provide information about the firm, and qualify potential clients by gathering information about their legal issues.
+This is a web-based AI receptionist assistant for law firms. The agent can welcome clients, understand their issue, collect their information, categorize their legal matter, and prepare a structured intake for the lawyers.
 
 ## How to Use
 
@@ -12,7 +12,7 @@ This is a web-based virtual receptionist application for Australian Lawyers & Ad
 
 ## Features
 
--   **Custom Greeting:** The receptionist greets visitors with a message specific to Australian Lawyers & Advocates.
+-   **Custom Greeting:** The receptionist greets visitors with a professional and welcoming message.
 -   **Lead Qualification:** The agent can guide potential clients through a series of questions to understand their legal needs, including the type of issue, urgency, and contact information.
--   **Information Provision:** The agent can provide information about the firm's lawyers (Jack Leitner and Daniel Shestowsky), services (criminal, traffic, and family law), values, and contact details.
+-   **Structured Intake:** The agent prepares a structured intake summary in JSON format for the lawyers.
 -   **Data Persistence:** All lead information is saved in your browser's `localStorage`.
