@@ -5,13 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const micButton = document.getElementById('mic-button');
     const synth = window.speechSynthesis;
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-
     let conversationState = 'idle';
     let tempLeadData = {
         name: "",
         phone: "",
         email: "",
-        legal_category: "",
+        legal_category:  feature/modern-ui-and-detailed-intake
         case_description: "",
         desired_outcome: "",
         incident_date: "",
@@ -22,12 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
         previous_representation: "",
         conflict_check_parties: "",
         preferred_consultation_method: ""
-    };
 
+        short_description: "",
+        details_collected: "",
+        urgency: "",
+        preferred_consultation_time: ""
+      main
+    };
     recognition.lang = 'en-US';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
     const speak = (text) => {
         addAiMessage(text);
         const utterance = new SpeechSynthesisUtterance(text);
@@ -35,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         utterance.pitch = 1;
         synth.speak(utterance);
     };
-
     const addMessage = (text, sender) => {
         const message = document.createElement('div');
         message.classList.add('message', `${sender}-message`);
@@ -43,12 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
         chatLog.appendChild(message);
         chatLog.scrollTop = chatLog.scrollHeight;
     };
-
     const addUserMessage = (text) => addMessage(text, 'user');
     const addAiMessage = (text) => addMessage(text, 'ai');
-
     const processUserInput = (text) => {
         addUserMessage(text);
+ feature/modern-ui-and-detailed-intake
         handleConversationFlow(text);
     };
 
@@ -126,12 +127,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'awaiting_consultation_method':
                 tempLeadData.preferred_consultation_method = text;
+        handleConversationFlow(text.toLowerCase());
+    };
+    const handleConversationFlow = (text) => {
+        switch (conversationState) {
+            case 'idle':
+                tempLeadData.short_description = text;
+                conversationState = 'awaiting_legal_category';
+                speak("I am an AI Receptionist Assistant for a law firm. Your information is confidential, and I am not providing legal advice. I have noted your issue. Which of the following legal categories does it belong to: contract, corporate, family, civil litigation, criminal, real estate, intellectual property, immigration, debt recovery, or other?");
+                break;
+            case 'awaiting_legal_category':
+                tempLeadData.legal_category = text;
+                conversationState = 'awaiting_name';
+                speak("Got it. May I have your full name?");
+                break;
+            case 'awaiting_name':
+                tempLeadData.name = text;
+                conversationState = 'awaiting_phone';
+                speak(`Thank you, ${text}. What is your phone number?`);
+                break;
+            case 'awaiting_phone':
+                tempLeadData.phone = text;
+                conversationState = 'awaiting_email';
+                speak("And your email address?");
+                break;
+            case 'awaiting_email':
+                tempLeadData.email = text;
+                conversationState = 'awaiting_urgency';
+                speak("How urgent is this matter?");
+                break;
+            case 'awaiting_urgency':
+                tempLeadData.urgency = text;
+                conversationState = 'awaiting_consultation_time';
+                speak("What is your preferred consultation time?");
+                break;
+            case 'awaiting_consultation_time':
+                tempLeadData.preferred_consultation_time = text;
+                tempLeadData.details_collected = "all";
+            main
                 saveLead(tempLeadData);
                 resetConversation();
                 break;
         }
     };
+ feature/modern-ui-and-detailed-intake
 
+
+ main
     const resetConversation = () => {
         conversationState = 'idle';
         tempLeadData = {
@@ -139,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: "",
             email: "",
             legal_category: "",
+ feature/modern-ui-and-detailed-intake
             case_description: "",
             desired_outcome: "",
             incident_date: "",
@@ -149,9 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
             previous_representation: "",
             conflict_check_parties: "",
             preferred_consultation_method: ""
+            short_description: "",
+            details_collected: "",
+            urgency: "",
+            preferred_consultation_time: ""
+ main
         };
     };
-
     const saveLead = (data) => {
         const jsonOutput = JSON.stringify(data, null, 2);
         addAiMessage(`Thank you for contacting us. Your request will be forwarded to the legal team. Here is a summary of your intake:\n${jsonOutput}`);
@@ -160,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
         existingData.push({ ...data, timestamp: new Date().toISOString() });
         localStorage.setItem(key, JSON.stringify(existingData));
     };
-
     sendButton.addEventListener('click', () => {
         const text = userInput.value.trim();
         if (text) {
@@ -168,25 +214,29 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.value = '';
         }
     });
-
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             sendButton.click();
         }
     });
-
     micButton.addEventListener('click', () => {
         recognition.start();
     });
-
     recognition.onresult = (event) => {
         const speechToText = event.results[0][0].transcript;
         processUserInput(speechToText);
     };
-
     recognition.onerror = (event) => {
         speak("I'm sorry, I couldn't understand that. Please try again.");
     };
+ feature/modern-ui-and-detailed-intake
 
     // No initial greeting on page load, wait for user to start the conversation.
+
+    // Initial greeting
+    setTimeout(() => {
+        speak("Welcome! To start, please type your message or use the microphone.");
+        conversationState = 'idle';
+    }, 500);
+ main
 });
