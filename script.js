@@ -10,11 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
         name: "",
         phone: "",
         email: "",
-        legal_category: "",
+        legal_category:  feature/modern-ui-and-detailed-intake
+        case_description: "",
+        desired_outcome: "",
+        incident_date: "",
+        deadlines: "",
+        urgency: "",
+        incident_location: "",
+        other_party: "",
+        previous_representation: "",
+        conflict_check_parties: "",
+        preferred_consultation_method: ""
+
         short_description: "",
         details_collected: "",
         urgency: "",
         preferred_consultation_time: ""
+      main
     };
     recognition.lang = 'en-US';
     recognition.interimResults = false;
@@ -37,6 +49,84 @@ document.addEventListener('DOMContentLoaded', () => {
     const addAiMessage = (text) => addMessage(text, 'ai');
     const processUserInput = (text) => {
         addUserMessage(text);
+ feature/modern-ui-and-detailed-intake
+        handleConversationFlow(text);
+    };
+
+    const handleConversationFlow = (text) => {
+        if (conversationState === 'idle') {
+            conversationState = 'awaiting_name';
+            // Don't process the user's first message ('hi there'), just ask for their name.
+            speak("Welcome to AvaDesk. I am an AI Receptionist Assistant. Your information is confidential, and I am not providing legal advice. May I have your full name, please?");
+            return;
+        }
+
+        switch (conversationState) {
+            case 'awaiting_name':
+                tempLeadData.name = text;
+                conversationState = 'awaiting_contact';
+                speak(`Thank you, ${text}. What is the best phone number and email address to reach you?`);
+                break;
+            case 'awaiting_contact':
+                // Simple parsing for phone and email. A more robust solution would use regex.
+                const parts = text.split(' ');
+                tempLeadData.phone = parts.find(p => p.match(/^[0-9-()+]+$/)) || "Not provided";
+                tempLeadData.email = parts.find(p => p.includes('@')) || "Not provided";
+                conversationState = 'awaiting_legal_category';
+                speak("Thank you. What type of legal issue are you facing? (e.g., Criminal, Family Law, Traffic, etc.)");
+                break;
+            case 'awaiting_legal_category':
+                tempLeadData.legal_category = text;
+                conversationState = 'awaiting_case_description';
+                speak("Could you briefly describe what happened?");
+                break;
+            case 'awaiting_case_description':
+                tempLeadData.case_description = text;
+                conversationState = 'awaiting_desired_outcome';
+                speak("What is the main outcome you are hoping for?");
+                break;
+            case 'awaiting_desired_outcome':
+                tempLeadData.desired_outcome = text;
+                conversationState = 'awaiting_incident_date';
+                speak("When did this incident occur?");
+                break;
+            case 'awaiting_incident_date':
+                tempLeadData.incident_date = text;
+                conversationState = 'awaiting_deadlines';
+                speak("Are there any upcoming deadlines, like a court date or a hearing?");
+                break;
+            case 'awaiting_deadlines':
+                tempLeadData.deadlines = text;
+                conversationState = 'awaiting_urgency';
+                speak("How time-sensitive would you say your situation is?");
+                break;
+            case 'awaiting_urgency':
+                tempLeadData.urgency = text;
+                conversationState = 'awaiting_incident_location';
+                speak("What city and state did this occur in?");
+                break;
+            case 'awaiting_incident_location':
+                tempLeadData.incident_location = text;
+                conversationState = 'awaiting_other_party';
+                speak("Who is the other party involved? (e.g., a specific person, a company, the police)");
+                break;
+            case 'awaiting_other_party':
+                tempLeadData.other_party = text;
+                conversationState = 'awaiting_previous_representation';
+                speak("Have you already spoken to or hired another lawyer about this matter?");
+                break;
+            case 'awaiting_previous_representation':
+                tempLeadData.previous_representation = text;
+                conversationState = 'awaiting_conflict_check';
+                speak("May I have the full names of the other parties involved so I can ensure there's no conflict of interest?");
+                break;
+            case 'awaiting_conflict_check':
+                tempLeadData.conflict_check_parties = text;
+                conversationState = 'awaiting_consultation_method';
+                speak("What is the best way to schedule a consultation: a phone call or a video meeting?");
+                break;
+            case 'awaiting_consultation_method':
+                tempLeadData.preferred_consultation_method = text;
         handleConversationFlow(text.toLowerCase());
     };
     const handleConversationFlow = (text) => {
@@ -74,11 +164,16 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'awaiting_consultation_time':
                 tempLeadData.preferred_consultation_time = text;
                 tempLeadData.details_collected = "all";
+            main
                 saveLead(tempLeadData);
                 resetConversation();
                 break;
         }
     };
+ feature/modern-ui-and-detailed-intake
+
+
+ main
     const resetConversation = () => {
         conversationState = 'idle';
         tempLeadData = {
@@ -86,10 +181,22 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: "",
             email: "",
             legal_category: "",
+ feature/modern-ui-and-detailed-intake
+            case_description: "",
+            desired_outcome: "",
+            incident_date: "",
+            deadlines: "",
+            urgency: "",
+            incident_location: "",
+            other_party: "",
+            previous_representation: "",
+            conflict_check_parties: "",
+            preferred_consultation_method: ""
             short_description: "",
             details_collected: "",
             urgency: "",
             preferred_consultation_time: ""
+ main
         };
     };
     const saveLead = (data) => {
@@ -122,9 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
     recognition.onerror = (event) => {
         speak("I'm sorry, I couldn't understand that. Please try again.");
     };
+ feature/modern-ui-and-detailed-intake
+
+    // No initial greeting on page load, wait for user to start the conversation.
+
     // Initial greeting
     setTimeout(() => {
         speak("Welcome! To start, please type your message or use the microphone.");
         conversationState = 'idle';
     }, 500);
+ main
 });
