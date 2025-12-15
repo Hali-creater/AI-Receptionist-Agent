@@ -1,69 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-
+/* General Body Styles */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #121212;
+    background-color: #121212 !important;
+    color: #EAEAEA !important;
+}
+
+/* Chat Input Styles */
+.stChatInputContainer > div {
+    background-color: #2D2D2D;
+}
+
+[data-testid="stChatInput"] {
+    background-color: #2D2D2D;
     color: #EAEAEA;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
 }
 
-#chat-container {
-    width: 450px;
-    height: 90vh;
-    max-height: 700px;
-    border: none;
-    border-radius: 15px;
-    background-color: #1E1E1E;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
-
-#chat-header {
-    padding: 20px;
-    background-color: #2D2D2D;
-    border-bottom: 1px solid #333;
-    border-radius: 15px 15px 0 0;
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: 500;
-}
-
-#chat-log {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Scrollbar styling */
-#chat-log::-webkit-scrollbar {
-    width: 8px;
-}
-
-#chat-log::-webkit-scrollbar-track {
-    background: #1E1E1E;
-}
-
-#chat-log::-webkit-scrollbar-thumb {
-    background-color: #2D2D2D;
-    border-radius: 4px;
-    border: 2px solid #1E1E1E;
-}
-
-.message {
-    padding: 12px 18px;
+/* Chat Message Styles */
+[data-testid="stChatMessage"] {
     border-radius: 20px;
+    padding: 12px 18px;
     max-width: 80%;
-    line-height: 1.5;
 }
 
+/* User Message Styles */
 .user-message {
     background-color: #3B82F6; /* A modern blue */
     color: white;
@@ -71,48 +29,10 @@ body {
     border-bottom-right-radius: 5px;
 }
 
+/* AI Message Styles */
 .ai-message {
     background-color: #2D2D2D;
     color: #EAEAEA;
     align-self: flex-start;
     border-bottom-left-radius: 5px;
-}
-
-#input-container {
-    display: flex;
-    padding: 20px;
-    border-top: 1px solid #333;
-}
-
-#user-input {
-    flex-grow: 1;
-    border: none;
-    border-radius: 20px;
-    padding: 12px 18px;
-    background-color: #2D2D2D;
-    color: #EAEAEA;
-    font-size: 1em;
-}
-
-#user-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px #3B82F6;
-}
-
-#send-button, #mic-button {
-    border: none;
-    background-color: transparent;
-    color: #3B82F6;
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 0 10px;
-    transition: color 0.2s ease;
-}
-
-#mic-button {
-    margin-left: 5px;
-}
-
-#send-button:hover, #mic-button:hover {
-    color: #2563EB;
 }
