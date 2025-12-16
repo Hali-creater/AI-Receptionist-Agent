@@ -14,25 +14,25 @@ body {
     color: #EAEAEA;
 }
 
-/* Chat Message Styles */
+/* Make the Streamlit container transparent so our custom bubble color can show through */
 [data-testid="stChatMessage"] {
-    border-radius: 20px;
-    padding: 12px 18px;
-    max-width: 80%;
+    background-color: transparent !important;
 }
 
 /* User Message Styles */
 .user-message {
     background-color: #3B82F6; /* A modern blue */
     color: white;
-    align-self: flex-end;
+    padding: 12px 18px;
+    border-radius: 20px;
     border-bottom-right-radius: 5px;
 }
 
-/* AI Message Styles */
-.ai-message {
+/* AI Message Styles - with increased specificity */
+div[data-testid="stChatMessage"] .assistant-message {
     background-color: #2D2D2D;
     color: #EAEAEA;
-    align-self: flex-start;
+    padding: 12px 18px;
+    border-radius: 20px;
     border-bottom-left-radius: 5px;
 }
