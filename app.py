@@ -91,10 +91,11 @@ def main():
         st.session_state.chat_history.append({"role": "assistant", "content": QUESTIONS[0]['question']})
 
     for message in st.session_state.chat_history:
+        # Use a wrapper div with custom classes for styling
         with st.chat_message(message["role"]):
-            st.markdown(f'<div class="{message["role"]}-message">{message["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="bubble {message["role"]}-bubble">{message["content"]}</div>', unsafe_allow_html=True)
 
-    user_input = st.chat_input("Type your message...")
+    user_input = st.chat_input("Your response...")
 
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
