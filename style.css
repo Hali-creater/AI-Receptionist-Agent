@@ -1,38 +1,66 @@
-/* General Body Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* --- General Body & Font Styles --- */
 body {
-    background-color: #121212 !important;
-    color: #EAEAEA !important;
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a0a0a; /* A slightly softer black for the background */
+    color: #f0f0f0; /* A softer white for text */
 }
 
-/* Chat Input Styles */
-.stChatInputContainer > div {
-    background-color: #2D2D2D;
+/* --- Main Chat Container --- */
+[data-testid="stAppViewContainer"] {
+    background-color: #1a1a1a; /* Dark grey for the main container */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-width: 600px; /* Constrain width for better readability */
+    margin: 2rem auto; /* Center the container with some margin */
+    padding: 1rem 2rem;
 }
 
+/* --- App Header/Title --- */
+h1 {
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+/* --- Chat Input Box --- */
 [data-testid="stChatInput"] {
-    background-color: #2D2D2D;
-    color: #EAEAEA;
+    background-color: #2b2b2b;
+    border: 1px solid #444;
+    border-radius: 10px;
+    color: #f0f0f0;
 }
 
-/* Make the Streamlit container transparent so our custom bubble color can show through */
+.stChatInputContainer > div {
+    background-color: transparent; /* Ensure container is transparent */
+}
+
+/* --- Chat Message Bubbles --- */
 [data-testid="stChatMessage"] {
     background-color: transparent !important;
+    padding: 0;
+    margin-bottom: 1rem; /* Add spacing between messages */
 }
 
-/* User Message Styles */
+/* --- User Message Bubble --- */
 .user-message {
-    background-color: #3B82F6; /* A modern blue */
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Professional blue gradient */
     color: white;
     padding: 12px 18px;
     border-radius: 20px;
     border-bottom-right-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
-/* AI Message Styles - with increased specificity */
+/* --- Assistant Message Bubble --- */
 div[data-testid="stChatMessage"] .assistant-message {
-    background-color: #2D2D2D;
-    color: #EAEAEA;
+    background-color: #2c2c2e; /* A distinct, dark grey for the AI */
+    color: #f0f0f0;
     padding: 12px 18px;
     border-radius: 20px;
     border-bottom-left-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
