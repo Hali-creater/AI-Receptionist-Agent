@@ -91,13 +91,24 @@ def main():
         st.session_state.chat_history.append({"role": "assistant", "content": QUESTIONS[0]['question']})
 
     for message in st.session_state.chat_history:
-        # Use a wrapper div with custom classes for styling
-        with st.chat_message(message["role"]):
-            st.markdown(f'<div class="bubble {message["role"]}-bubble">{message["content"]}</div>', unsafe_allow_html=True)
+        role = message["role"]
+        # Use a non-'user' role to force left-alignment for all messages.
+        # We use the original role to apply the correct CSS class for bubble color.
+        display_role = "Client" if role == "user" else role
+        with st.chat_message(display_role):
+            st.markdown(f'<div class="{role}-message">{message["content"]}</div>', unsafe_allow_html=True)
 
-    user_input = st.chat_input("Your response...")
+    user_input = st.chat_input("Type your response...")
 
     if user_input:
+        # If the conversation is finished, the next input should start a new session.
+        if st.session_state.current_question_index >= len(QUESTIONS):
+            # Reset all session state variables to their initial values.
+            st.session_state.current_question_index = 0
+            st.session_state.lead_data = {q["key"]: "" for q in QUESTIONS}
+            st.session_state.chat_history = [{"role": "assistant", "content": "Welcome to AvaDesk. I am an AI Receptionist Assistant. Your information is confidential, and I am not providing legal advice. To start, please answer the following questions."}]
+            st.session_state.chat_history.append({"role": "assistant", "content": QUESTIONS[0]['question']})
+
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         handle_conversation_flow(user_input)
         st.rerun()
@@ -105,6 +116,11 @@ def main():
 
 def handle_conversation_flow(user_answer):
     current_index = st.session_state.current_question_index
+
+    # This function should not be called if the conversation is already over,
+    # but we check just in case to prevent index errors.
+    if current_index >= len(QUESTIONS):
+        return
 
     question_key = QUESTIONS[current_index]["key"]
     st.session_state.lead_data[question_key] = user_answer
@@ -116,6 +132,8 @@ def handle_conversation_flow(user_answer):
         next_question = QUESTIONS[next_index]["question"]
         st.session_state.chat_history.append({"role": "assistant", "content": next_question})
     else:
+        # This is the end of the conversation. Display summary and send email.
+        # The state will be reset on the *next* user input.
         summary = "Thank you for providing all the information. Here is a summary of your intake:"
         json_output = json.dumps(st.session_state.lead_data, indent=2)
         final_message = f"{summary}\n```json\n{json_output}\n```"
@@ -129,10 +147,6 @@ def handle_conversation_flow(user_answer):
             st.session_state.chat_history.append({"role": "assistant", "content": "Your information has been securely sent to the legal team. They will review your case and get back to you shortly."})
         else:
             st.session_state.chat_history.append({"role": "assistant", "content": "There was an issue sending your information to the legal team. Please copy the summary above and send it to them directly."})
-
-
-        st.session_state.current_question_index = 0
-        st.session_state.lead_data = {q["key"]: "" for q in QUESTIONS}
 
 
 if __name__ == "__main__":
