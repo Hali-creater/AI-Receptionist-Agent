@@ -24,8 +24,15 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     max-width: 600px; /* Constrain width for better readability */
     margin: 2rem auto; /* Center the container with some margin */
-    padding: 1rem 2rem;
+    padding: 1rem 0; /* Remove vertical padding */
 }
+
+/* --- Main Chat Log Area --- */
+[data-testid="stVerticalBlock"] {
+    padding: 0 2rem; /* Apply horizontal padding here */
+    overflow-y: auto; /* Allow scrolling for the chat log */
+}
+
 
 /* --- App Header/Title --- */
 h1 {
