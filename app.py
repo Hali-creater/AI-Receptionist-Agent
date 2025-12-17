@@ -1,5 +1,7 @@
 import streamlit as st
 import json
+import smtplib
+from email.mime.text import MIMEText
 
 QUESTIONS = [
     # Phase 1: Foundation & Identity
@@ -48,6 +50,30 @@ QUESTIONS = [
     {"key": "final_check", "phase": 6, "question": "Is there anything important I haven't asked about that you think I need to know?"}
 ]
 
+def send_email(subject, body):
+    """Sends an email using credentials from Streamlit's secrets."""
+    try:
+        email_config = st.secrets["email"]
+        sender_email = email_config["address"]
+        password = email_config["password"]
+        recipient_email = email_config["recipient_address"]
+        smtp_server = email_config["smtp_server"]
+        smtp_port = email_config["smtp_port"]
+
+        msg = MIMEText(body)
+        msg['Subject'] = subject
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(sender_email, password)
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        st.error(f"Error sending email: {e}")
+        return False
+
 def main():
     st.set_page_config(layout="centered", page_title="AvaDesk")
 
@@ -94,6 +120,15 @@ def handle_conversation_flow(user_answer):
         final_message = f"{summary}\n```json\n{json_output}\n```"
 
         st.session_state.chat_history.append({"role": "assistant", "content": final_message})
+
+        email_subject = f"New Client Intake: {st.session_state.lead_data.get('full_legal_name', 'N/A')}"
+        email_body = f"A new client has completed the intake process. Below is the summary of their information:\n\n{json_output}"
+
+        if send_email(email_subject, email_body):
+            st.session_state.chat_history.append({"role": "assistant", "content": "Your information has been securely sent to the legal team. They will review your case and get back to you shortly."})
+        else:
+            st.session_state.chat_history.append({"role": "assistant", "content": "There was an issue sending your information to the legal team. Please copy the summary above and send it to them directly."})
+
 
         st.session_state.current_question_index = 0
         st.session_state.lead_data = {q["key"]: "" for q in QUESTIONS}
