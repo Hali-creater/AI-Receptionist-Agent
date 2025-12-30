@@ -53,6 +53,12 @@ h1 {
     background-color: transparent !important;
 }
 
+/* --- Style for the text inside the input bar --- */
+[data-testid="stChatInput"] textarea {
+    font-size: 1.1rem; /* Make the font larger */
+    color: #FFFFFF; /* Make the text white and bright */
+}
+
 /* --- Chat Message Bubbles --- */
 [data-testid="stChatMessage"] {
     background-color: transparent !important;
