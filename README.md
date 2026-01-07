@@ -36,3 +36,41 @@ The client-facing interaction is designed to be simple, intuitive, and reassurin
 4.  **Review and Confirmation:** After the final question is answered, the AI presents a complete summary of all the information the client has provided, formatted for easy review.
 
 5.  **Automatic & Secure Submission:** With the client's information gathered, the system automatically emails the structured summary to the designated address at the law firm. The client is then informed that their details have been securely sent and that the legal team will be in touch shortly. The chat then resets, ready for the next user.
+
+## Integration with Your Firm's Workflow
+
+AvaDesk is designed to be a flexible component of your firm's client intake process. The structured JSON data emailed at the end of each conversation can be integrated into your existing systems in several ways, catering to different levels of technical capability.
+
+### Level 1: Manual Data Entry
+
+This is the simplest method and requires no technical setup.
+
+1.  **Receive the Email:** A designated email address (e.g., `newleads@yourfirm.com`) receives the client summary.
+2.  **Manual Review:** Your administrative staff or paralegals open the email.
+3.  **Copy & Paste:** The information is manually copied from the email and pasted into your Case Management System (CMS), CRM, or client database.
+
+This process eliminates the need for manual transcription of notes and ensures all key information is captured in a consistent format.
+
+### Level 2: Semi-Automated Integration via Email Forwarding
+
+Many modern Case Management Systems can automatically create a new lead or matter when an email is forwarded to a specific address.
+
+1.  **Configure Your CMS:** In your CMS, find the "email-to-case" or "email-to-lead" feature and get the unique email address it provides.
+2.  **Set Up Email Rule:** In your email client (e.g., Outlook, Gmail), create a rule that automatically forwards all emails from AvaDesk (based on the sender address or subject line) to the unique CMS email address.
+3.  **Automatic Lead Creation:** Your CMS will now automatically create a new entry for each client, with the full JSON summary in the body of the case file.
+
+### Level 3: Fully Automated Integration (Advanced)
+
+For firms seeking maximum efficiency, the JSON data can be used to automatically populate specific fields in your case management system. This method requires technical resources but offers a completely seamless workflow.
+
+1.  **Using an Email Parser:**
+    *   Services like Zapier, Make (formerly Integromat), or Microsoft Power Automate can monitor the designated inbox for new emails from AvaDesk.
+    *   You can create a "workflow" or "zap" that parses the JSON content from the email body.
+    *   This workflow then maps the data from the JSON (e.g., `full_legal_name`, `case_summary`) to the corresponding fields in your CMS (e.g., "Client Name," "Case Description") via the CMS's API.
+
+2.  **Direct API Integration (Requires a Developer):**
+    *   A developer can modify the `app.py` script directly.
+    *   Instead of sending an email, the script can be updated to make a direct API call to your CMS at the end of the conversation.
+    *   The collected `lead_data` dictionary can be sent as a payload to the CMS API, creating a new, fully populated client record in real-time.
+
+By offering these varied integration paths, AvaDesk can adapt to your firm's specific needs, reducing administrative overhead and ensuring that valuable client data flows seamlessly from first contact into your case management pipeline.
